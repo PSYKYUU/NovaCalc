@@ -4,70 +4,70 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Centered with generous breathing margin (not zoomed or cropped) -->
     <group
         android:translateX="0"
         android:translateY="0">
 
-        <!-- Calculator Chassis with Smooth Rounded Corners -->
-        <!-- Outer Chassis Body -->
+        <!-- Calculator Outer Chassis (Dark Slate Body) -->
         <path
             android:fillColor="#151C26"
-            android:pathData="M39,21 H69 A12,12 0 0,1 81,33 V75 A12,12 0 0,1 69,87 H39 A12,12 0 0,1 27,75 V33 A12,12 0 0,1 39,21 Z" />
+            android:pathData="M42,30 H66 A8,8 0 0,1 74,38 V70 A8,8 0 0,1 66,78 H42 A8,8 0 0,1 34,70 V38 A8,8 0 0,1 42,30 Z" />
 
-        <!-- Top Screen Display -->
+        <!-- Calculator Screen Display Window -->
         <path
             android:fillColor="#263242"
-            android:pathData="M37,27 H71 A4,4 0 0,1 75,31 V36 A4,4 0 0,1 71,40 H37 A4,4 0 0,1 33,36 V31 A4,4 0 0,1 37,27 Z" />
+            android:pathData="M41,34 H67 A3,3 0 0,1 70,37 V41 A3,3 0 0,1 67,44 H41 A3,3 0 0,1 38,41 V37 A3,3 0 0,1 41,34 Z" />
 
-        <!-- 2x2 Keypad Grid -->
+        <!-- 2x2 Keypad Buttons -->
 
         <!-- 1. Top-Left Button: Plus (+) -->
         <path
             android:fillColor="#344155"
-            android:pathData="M38,45 H47 A5,5 0 0,1 52,50 V57 A5,5 0 0,1 47,62 H38 A5,5 0 0,1 33,57 V50 A5,5 0 0,1 38,45 Z" />
+            android:pathData="M41,47 H49 A3,3 0 0,1 52,50 V55 A3,3 0 0,1 49,58 H41 A3,3 0 0,1 38,55 V50 A3,3 0 0,1 41,47 Z" />
         <!-- Plus Sign Symbol -->
         <path
             android:fillColor="#00000000"
             android:strokeColor="#FFFFFF"
-            android:strokeWidth="2.5"
+            android:strokeWidth="1.8"
             android:strokeLineCap="round"
-            android:pathData="M37.5,53.5 L47.5,53.5 M42.5,48.5 L42.5,58.5" />
+            android:pathData="M41.5,52.5 L48.5,52.5 M45,49 L45,56" />
 
         <!-- 2. Top-Right Button: Minus (-) -->
         <path
             android:fillColor="#344155"
-            android:pathData="M61,45 H70 A5,5 0 0,1 75,50 V57 A5,5 0 0,1 70,62 H61 A5,5 0 0,1 56,57 V50 A5,5 0 0,1 61,45 Z" />
+            android:pathData="M59,47 H67 A3,3 0 0,1 70,50 V55 A3,3 0 0,1 67,58 H59 A3,3 0 0,1 56,55 V50 A3,3 0 0,1 59,47 Z" />
         <!-- Minus Sign Symbol -->
         <path
             android:fillColor="#00000000"
             android:strokeColor="#FFFFFF"
-            android:strokeWidth="2.5"
+            android:strokeWidth="1.8"
             android:strokeLineCap="round"
-            android:pathData="M60.5,53.5 L70.5,53.5" />
+            android:pathData="M59.5,52.5 L66.5,52.5" />
 
         <!-- 3. Bottom-Left Button: Multiply (×) -->
         <path
             android:fillColor="#344155"
-            android:pathData="M38,67 H47 A5,5 0 0,1 52,72 V79 A5,5 0 0,1 47,84 H38 A5,5 0 0,1 33,79 V72 A5,5 0 0,1 38,67 Z" />
+            android:pathData="M41,61 H49 A3,3 0 0,1 52,64 V69 A3,3 0 0,1 49,72 H41 A3,3 0 0,1 38,69 V64 A3,3 0 0,1 41,61 Z" />
         <!-- Multiply Sign Symbol -->
         <path
             android:fillColor="#00000000"
             android:strokeColor="#FFFFFF"
-            android:strokeWidth="2.5"
+            android:strokeWidth="1.8"
             android:strokeLineCap="round"
-            android:pathData="M38.5,71.5 L46.5,79.5 M46.5,71.5 L38.5,79.5" />
+            android:pathData="M42,63.5 L48,69.5 M48,63.5 L42,69.5" />
 
         <!-- 4. Bottom-Right Button: Electric Blue Equals (=) -->
         <path
             android:fillColor="#2563EB"
-            android:pathData="M61,67 H70 A5,5 0 0,1 75,72 V79 A5,5 0 0,1 70,84 H61 A5,5 0 0,1 56,79 V72 A5,5 0 0,1 61,67 Z" />
+            android:pathData="M59,61 H67 A3,3 0 0,1 70,64 V69 A3,3 0 0,1 67,72 H59 A3,3 0 0,1 56,69 V64 A3,3 0 0,1 59,61 Z" />
         <!-- Equals Sign Symbol -->
         <path
             android:fillColor="#00000000"
             android:strokeColor="#FFFFFF"
-            android:strokeWidth="2.5"
+            android:strokeWidth="1.8"
             android:strokeLineCap="round"
-            android:pathData="M61,73.5 L70,73.5 M61,78 L70,78" />
+            android:pathData="M60,65 L66,65 M60,68 L66,68" />
 
     </group>
 </vector>

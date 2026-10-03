@@ -2,6 +2,7 @@ package com.example.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -470,17 +472,21 @@ fun AboutDialog(onDismiss: () -> Unit) {
                 .testTag("dialog_about"),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Official App Icon following dynamic corner styling
             Surface(
                 shape = shapes.cardShape,
-                color = colors.keyOpBg,
-                modifier = Modifier.size(72.dp)
+                color = androidx.compose.ui.graphics.Color(0xFF1A222D),
+                border = androidx.compose.foundation.BorderStroke(1.dp, colors.border),
+                modifier = Modifier.size(84.dp)
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Default.Calculate,
-                        contentDescription = null,
-                        tint = colors.accentPrimary,
-                        modifier = Modifier.size(36.dp)
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(id = com.example.R.drawable.ic_launcher_foreground),
+                        contentDescription = "NovaCalc App Icon",
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             }
@@ -501,7 +507,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
 
             Spacer(modifier = Modifier.height(18.dp))
 
-            // Dedicated CTTO (Credits To The Owner) Card
+            // Dedicated Credits To The Owner Card
             Surface(
                 shape = shapes.cardShape,
                 color = colors.accentPrimary.copy(alpha = 0.12f),
@@ -523,7 +529,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
                             modifier = Modifier.size(18.dp)
                         )
                         Text(
-                            text = "Credits To The Owner (CTTO)",
+                            text = "Credits To The Owner",
                             color = colors.accentPrimary,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold

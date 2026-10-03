@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.KeypadMode
 import com.example.ui.theme.LocalCalcColors
+import com.example.ui.theme.LocalCalcShapes
 
 @Composable
 fun KeypadSection(
@@ -31,6 +32,7 @@ fun KeypadSection(
     modifier: Modifier = Modifier
 ) {
     val colors = LocalCalcColors.current
+    val shapes = LocalCalcShapes.current
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -38,7 +40,7 @@ fun KeypadSection(
     ) {
         // Mode Selector Tab Bar
         Surface(
-            shape = RoundedCornerShape(16.dp),
+            shape = shapes.cardShape,
             color = colors.surfaceElevated,
             modifier = Modifier
                 .fillMaxWidth()
@@ -122,10 +124,11 @@ private fun ModeTab(
     testTag: String
 ) {
     val colors = LocalCalcColors.current
+    val shapes = LocalCalcShapes.current
     Box(
         modifier = modifier
             .fillMaxHeight()
-            .clip(RoundedCornerShape(12.dp))
+            .clip(shapes.pillShape)
             .background(if (isSelected) colors.keyOpBg else Color.Transparent)
             .clickable { onClick() }
             .testTag(testTag),

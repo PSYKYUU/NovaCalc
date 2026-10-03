@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.VariableEntity
 import com.example.ui.theme.LocalCalcColors
+import com.example.ui.theme.LocalCalcShapes
 
 @Composable
 fun VariablesRow(
@@ -29,6 +30,7 @@ fun VariablesRow(
     modifier: Modifier = Modifier
 ) {
     val colors = LocalCalcColors.current
+    val shapes = LocalCalcShapes.current
     val scrollState = rememberScrollState()
 
     Row(
@@ -40,7 +42,7 @@ fun VariablesRow(
     ) {
         // "+ Store" button
         Surface(
-            shape = RoundedCornerShape(12.dp),
+            shape = shapes.pillShape,
             color = colors.keyOpBg,
             modifier = Modifier
                 .height(36.dp)
@@ -69,7 +71,7 @@ fun VariablesRow(
 
         // "Manage All" button
         Surface(
-            shape = RoundedCornerShape(12.dp),
+            shape = shapes.pillShape,
             color = colors.surfaceElevated,
             modifier = Modifier
                 .height(36.dp)
@@ -116,7 +118,7 @@ fun VariablesRow(
             val textColor = if (isComplex) colors.accentSecondary else colors.keyVarText
 
             Surface(
-                shape = RoundedCornerShape(12.dp),
+                shape = shapes.pillShape,
                 color = pillColor,
                 modifier = Modifier
                     .height(36.dp)

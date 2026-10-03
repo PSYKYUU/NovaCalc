@@ -1,9 +1,14 @@
 package com.example.ui.components
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -16,14 +21,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.ActiveModal
 import com.example.ui.CalculatorUiState
+import com.example.ui.NumberDisplayFormat
 import com.example.ui.theme.AppTheme
+import com.example.ui.theme.CalcColors
 import com.example.ui.theme.LocalCalcColors
 import com.example.ui.theme.LocalCalcShapes
 import com.example.ui.theme.getThemeColors
@@ -40,13 +50,17 @@ fun SettingsSheet(
     onToggleHaptics: (Boolean) -> Unit,
     onSelectPrecision: (Int) -> Unit,
     onToggleAngle: () -> Unit,
+    onCycleFormat: () -> Unit,
     onOpenModal: (ActiveModal) -> Unit,
     onClearAllData: () -> Unit,
+    onExportHistory: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    val context = LocalContext.current
     val colors = LocalCalcColors.current
     val shapes = LocalCalcShapes.current
     val scrollState = rememberScrollState()
+    val themeScrollState = rememberScrollState()
     var showClearDataConfirm by remember { mutableStateOf(false) }
 
     ModalBottomSheet(
@@ -58,7 +72,7 @@ fun SettingsSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.88f)
+                .fillMaxHeight(0.92f)
                 .padding(horizontal = 20.dp)
                 .padding(bottom = 20.dp)
                 .testTag("settings_sheet")
@@ -71,19 +85,35 @@ fun SettingsSheet(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = null,
-                        tint = colors.accentPrimary
-                    )
-                    Text(
-                        text = "Settings",
-                        color = colors.textPrimary,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Surface(
+                        shape = shapes.pillShape,
+                        color = colors.keyOpBg,
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Default.Tune,
+                                contentDescription = null,
+                                tint = colors.accentPrimary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    }
+                    Column {
+                        Text(
+                            text = "Settings",
+                            color = colors.textPrimary,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "Preferences, Appearance and System",
+                            color = colors.textMuted,
+                            fontSize = 11.sp
+                        )
+                    }
                 }
                 IconButton(onClick = onDismiss) {
                     Icon(Icons.Default.Close, contentDescription = "Close", tint = colors.textMuted)
@@ -98,19 +128,29 @@ fun SettingsSheet(
                     .verticalScroll(scrollState),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // 1. Theme & Appearance (including Corner Style toggle)
-                SectionCard(title = "Appearance & Theme") {
+                // ==========================================
+                // 1. Theme Visual Showcase & Corner Styling
+                // ==========================================
+                SectionCard(
+                    title = "Themes & Visual Style",
+                    icon = Icons.Default.Palette
+                ) {
                     Text(
-                        text = "Color Palette",
-                        color = colors.textPrimary,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold
+                        text = "Visual Mockups (Tap to apply theme live):",
+                        color = colors.textMuted,
+                        fontSize = 12.sp
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    // Horizontal Scrollable Visual Screenshot Mockup Cards
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(themeScrollState),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
                         AppTheme.values().forEach { theme ->
-                            ThemeItemRow(
+                            ThemeScreenshotCard(
                                 theme = theme,
                                 isSelected = uiState.appTheme == theme,
                                 onClick = { onSelectTheme(theme) }
@@ -118,7 +158,7 @@ fun SettingsSheet(
                         }
                     }
 
-                    Divider(color = colors.border.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 12.dp))
+                    Divider(color = colors.border.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 14.dp))
 
                     // Corner Styling Toggle (Rounded vs Sharp)
                     Row(
@@ -128,13 +168,13 @@ fun SettingsSheet(
                     ) {
                         Column {
                             Text(
-                                text = "Corner Style",
+                                text = "Corner Geometry",
                                 color = colors.textPrimary,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = if (uiState.sharpCorners) "Sharp square edges" else "Smooth rounded corners",
+                                text = if (uiState.sharpCorners) "Brutalist crisp edges (0-2dp)" else "Modern curved borders (16-24dp)",
                                 color = colors.textMuted,
                                 fontSize = 12.sp
                             )
@@ -142,7 +182,7 @@ fun SettingsSheet(
 
                         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                             ChoicePill(
-                                label = "Rounded",
+                                label = "Curved",
                                 isSelected = !uiState.sharpCorners,
                                 onClick = { onToggleSharpCorners(false) }
                             )
@@ -155,8 +195,13 @@ fun SettingsSheet(
                     }
                 }
 
-                // 2. Layout & Display Options
-                SectionCard(title = "Layout & Variables") {
+                // ==========================================
+                // 2. Calculator Engine & Layout Options
+                // ==========================================
+                SectionCard(
+                    title = "Engine & Display Preferences",
+                    icon = Icons.Default.Calculate
+                ) {
                     // Quick Variables Bar Toggle
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -171,7 +216,7 @@ fun SettingsSheet(
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = "Show horizontal variable chips bar directly above the keypad",
+                                text = "Display 1-tap variable chips bar directly above keypad",
                                 color = colors.textMuted,
                                 fontSize = 12.sp
                             )
@@ -188,9 +233,9 @@ fun SettingsSheet(
                         )
                     }
 
-                    Divider(color = colors.border.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 10.dp))
+                    Divider(color = colors.border.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 12.dp))
 
-                    // Angle Unit
+                    // Angle Unit (DEG vs RAD)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -198,13 +243,13 @@ fun SettingsSheet(
                     ) {
                         Column {
                             Text(
-                                text = "Trigonometric Angle Unit",
+                                text = "Trigonometric Unit",
                                 color = colors.textPrimary,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = if (uiState.isDegreeMode) "Degree Mode (DEG)" else "Radian Mode (RAD)",
+                                text = if (uiState.isDegreeMode) "Degree Mode (DEG): sin(90°) = 1" else "Radian Mode (RAD): sin(π/2) = 1",
                                 color = colors.textMuted,
                                 fontSize = 12.sp
                             )
@@ -225,7 +270,7 @@ fun SettingsSheet(
                         }
                     }
 
-                    Divider(color = colors.border.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 10.dp))
+                    Divider(color = colors.border.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 12.dp))
 
                     // Decimal Precision
                     Column {
@@ -241,7 +286,7 @@ fun SettingsSheet(
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = "${uiState.precisionDecimals} decimals",
+                                text = "${uiState.precisionDecimals} decimal places",
                                 color = colors.accentPrimary,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold
@@ -275,10 +320,10 @@ fun SettingsSheet(
                             }
                         }
                     }
-                }
 
-                // 3. Tactile Feedback
-                SectionCard(title = "Haptic Feedback") {
+                    Divider(color = colors.border.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 12.dp))
+
+                    // Number Format Cycle
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -286,13 +331,59 @@ fun SettingsSheet(
                     ) {
                         Column {
                             Text(
-                                text = "Vibration on Key Press",
+                                text = "Result Notation",
+                                color = colors.textPrimary,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            val formatDesc = when (uiState.numberFormat) {
+                                NumberDisplayFormat.STANDARD -> "Standard decimal (e.g. 1250.75)"
+                                NumberDisplayFormat.SCIENTIFIC -> "Scientific exponential (e.g. 1.25075e+03)"
+                                NumberDisplayFormat.POLAR -> "Complex polar form (e.g. 5 ∠ 53.13°)"
+                            }
+                            Text(
+                                text = formatDesc,
+                                color = colors.textMuted,
+                                fontSize = 12.sp
+                            )
+                        }
+                        Button(
+                            onClick = onCycleFormat,
+                            colors = ButtonDefaults.buttonColors(containerColor = colors.surface),
+                            shape = shapes.pillShape,
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = uiState.numberFormat.name,
+                                color = colors.accentPrimary,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+
+                // ==========================================
+                // 3. Tactile & System Feedback
+                // ==========================================
+                SectionCard(
+                    title = "Tactile & Haptics",
+                    icon = Icons.Default.Vibration
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
+                            Text(
+                                text = "Keypad Vibration Feedback",
                                 color = colors.textPrimary,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = "Provides responsive tactile feedback",
+                                text = "Provides responsive tactile vibration on button clicks",
                                 color = colors.textMuted,
                                 fontSize = 12.sp
                             )
@@ -310,8 +401,13 @@ fun SettingsSheet(
                     }
                 }
 
-                // 4. Data Management
-                SectionCard(title = "Storage & Database") {
+                // ==========================================
+                // 4. Data Storage & Export
+                // ==========================================
+                SectionCard(
+                    title = "Storage & Database",
+                    icon = Icons.Default.Storage
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -319,13 +415,45 @@ fun SettingsSheet(
                     ) {
                         Column {
                             Text(
-                                text = "Local Database",
+                                text = "Calculation History Logs",
                                 color = colors.textPrimary,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = "$historyCount calculation logs • $variablesCount variables",
+                                text = "$historyCount entries in local SQLite database",
+                                color = colors.textMuted,
+                                fontSize = 12.sp
+                            )
+                        }
+                        OutlinedButton(
+                            onClick = onExportHistory,
+                            shape = shapes.pillShape,
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = colors.accentPrimary),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, colors.accentPrimary.copy(alpha = 0.5f))
+                        ) {
+                            Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(14.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Export", fontSize = 12.sp)
+                        }
+                    }
+
+                    Divider(color = colors.border.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 12.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Reset Local Storage",
+                                color = colors.textPrimary,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                text = "$variablesCount user variables & history logs",
                                 color = colors.textMuted,
                                 fontSize = 12.sp
                             )
@@ -341,33 +469,38 @@ fun SettingsSheet(
                     }
                 }
 
+                // ==========================================
                 // 5. Legal & About (Clean full titles, no short forms)
-                SectionCard(title = "Legal and About") {
+                // ==========================================
+                SectionCard(
+                    title = "Documentation & Legal",
+                    icon = Icons.Default.MenuBook
+                ) {
                     SettingsNavigationItem(
                         icon = Icons.Default.Gavel,
                         title = "Terms and Conditions",
-                        subtitle = "Usage rules and calculation accuracy disclaimer",
+                        subtitle = "Usage rules, computation parameters and disclaimer",
                         onClick = { onOpenModal(ActiveModal.TERMS_AND_CONDITIONS) }
                     )
                     Divider(color = colors.border.copy(alpha = 0.4f), modifier = Modifier.padding(vertical = 4.dp))
                     SettingsNavigationItem(
                         icon = Icons.Default.Shield,
                         title = "Privacy Policy",
-                        subtitle = "100% offline, zero data collection or tracking",
+                        subtitle = "100% offline, zero telemetry, zero analytics tracking",
                         onClick = { onOpenModal(ActiveModal.PRIVACY_POLICY) }
                     )
                     Divider(color = colors.border.copy(alpha = 0.4f), modifier = Modifier.padding(vertical = 4.dp))
                     SettingsNavigationItem(
                         icon = Icons.Default.Description,
                         title = "Open Source Licenses",
-                        subtitle = "Full legal texts for Android Jetpack, Compose, Room, AlexCalc",
+                        subtitle = "Complete legal texts for AlexCalc, Android Jetpack, Room, Kotlin",
                         onClick = { onOpenModal(ActiveModal.LICENSES) }
                     )
                     Divider(color = colors.border.copy(alpha = 0.4f), modifier = Modifier.padding(vertical = 4.dp))
                     SettingsNavigationItem(
                         icon = Icons.Default.Info,
                         title = "About NovaCalc",
-                        subtitle = "Version 1.2.0 • Architecture & Credits To The Owner (CTTO)",
+                        subtitle = "Version 1.2.0 • Architecture & Credits To The Owner",
                         onClick = { onOpenModal(ActiveModal.ABOUT) }
                     )
                 }
@@ -410,6 +543,175 @@ fun SettingsSheet(
     }
 }
 
+/**
+ * Modern visual representation screenshot / mockup of the calculator theme.
+ */
+@Composable
+private fun ThemeScreenshotCard(
+    theme: AppTheme,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val colors = LocalCalcColors.current
+    val shapes = LocalCalcShapes.current
+    val preview = getThemeColors(theme)
+
+    Surface(
+        shape = shapes.cardShape,
+        color = colors.surface,
+        border = if (isSelected) androidx.compose.foundation.BorderStroke(2.dp, preview.accentPrimary)
+        else androidx.compose.foundation.BorderStroke(1.dp, colors.border.copy(alpha = 0.6f)),
+        modifier = Modifier
+            .width(148.dp)
+            .clickable { onClick() }
+            .testTag("theme_card_${theme.name}")
+    ) {
+        Column(
+            modifier = Modifier.padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Miniature UI Screenshot Representation
+            Surface(
+                shape = RoundedCornerShape(8.dp),
+                color = preview.bg,
+                border = androidx.compose.foundation.BorderStroke(1.dp, preview.border),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(98.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(6.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // Mini Top Status Bar
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(width = 18.dp, height = 5.dp)
+                                .clip(RoundedCornerShape(2.dp))
+                                .background(preview.keyOpBg)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .size(width = 10.dp, height = 5.dp)
+                                .clip(RoundedCornerShape(2.dp))
+                                .background(preview.accentPrimary)
+                        )
+                    }
+
+                    // Mini Display Box with realistic math
+                    Surface(
+                        shape = RoundedCornerShape(4.dp),
+                        color = preview.displayBg,
+                        border = androidx.compose.foundation.BorderStroke(0.5.dp, preview.border),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp, vertical = 2.dp),
+                            horizontalAlignment = Alignment.End
+                        ) {
+                            Text(
+                                text = "sin(π/4) + 2i",
+                                color = preview.textPrimary,
+                                fontSize = 7.sp,
+                                fontFamily = FontFamily.Monospace,
+                                maxLines = 1
+                            )
+                            Text(
+                                text = "= 0.707 + 2i",
+                                color = preview.accentPrimary,
+                                fontSize = 7.sp,
+                                fontFamily = FontFamily.Monospace,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1
+                            )
+                        }
+                    }
+
+                    // Mini Keypad Grid (3 rows x 4 cols)
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        // Row 1
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            MiniKey(color = preview.keyFnBg, weight = 1f)
+                            MiniKey(color = preview.keyFnBg, weight = 1f)
+                            MiniKey(color = preview.keyOpBg, weight = 1f)
+                            MiniKey(color = preview.keyClearBg, weight = 1f)
+                        }
+                        // Row 2
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            MiniKey(color = preview.keyNumBg, weight = 1f)
+                            MiniKey(color = preview.keyNumBg, weight = 1f)
+                            MiniKey(color = preview.keyNumBg, weight = 1f)
+                            MiniKey(color = preview.keyOpBg, weight = 1f)
+                        }
+                        // Row 3
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        ) {
+                            MiniKey(color = preview.keyNumBg, weight = 1f)
+                            MiniKey(color = preview.keyNumBg, weight = 1f)
+                            MiniKey(color = preview.keyNumBg, weight = 1f)
+                            MiniKey(color = preview.keyEqualBg, weight = 1f)
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Theme Name & Selection Pill
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = theme.displayName,
+                    color = if (isSelected) preview.accentPrimary else colors.textPrimary,
+                    fontSize = 11.sp,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    maxLines = 1
+                )
+                if (isSelected) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = "Selected",
+                        tint = preview.accentPrimary,
+                        modifier = Modifier.size(14.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MiniKey(color: Color, weight: Float) {
+    Box(
+        modifier = Modifier
+            .height(8.dp)
+            .clip(RoundedCornerShape(1.5.dp))
+            .background(color)
+    )
+}
+
 @Composable
 private fun ChoicePill(
     label: String,
@@ -422,9 +724,9 @@ private fun ChoicePill(
     Surface(
         shape = shapes.pillShape,
         color = if (isSelected) colors.keyOpBg else colors.surface,
-        border = if (isSelected) androidx.compose.foundation.BorderStroke(1.5.dp, colors.accentPrimary) else androidx.compose.foundation.BorderStroke(1.dp, colors.border),
-        modifier = Modifier
-            .clickable { onClick() }
+        border = if (isSelected) androidx.compose.foundation.BorderStroke(1.5.dp, colors.accentPrimary)
+        else androidx.compose.foundation.BorderStroke(1.dp, colors.border),
+        modifier = Modifier.clickable { onClick() }
     ) {
         Text(
             text = label,
@@ -439,6 +741,7 @@ private fun ChoicePill(
 @Composable
 private fun SectionCard(
     title: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val colors = LocalCalcColors.current
@@ -454,93 +757,25 @@ private fun SectionCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(
-                text = title,
-                color = colors.accentPrimary,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            content()
-        }
-    }
-}
-
-@Composable
-private fun ThemeItemRow(
-    theme: AppTheme,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    val colors = LocalCalcColors.current
-    val shapes = LocalCalcShapes.current
-    val preview = getThemeColors(theme)
-
-    Surface(
-        shape = shapes.pillShape,
-        color = if (isSelected) preview.keyOpBg else preview.surface,
-        border = if (isSelected) androidx.compose.foundation.BorderStroke(1.5.dp, preview.accentPrimary) else androidx.compose.foundation.BorderStroke(1.dp, colors.border.copy(alpha = 0.5f)),
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .testTag("theme_item_${theme.name}")
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clip(CircleShape)
-                            .background(preview.bg)
-                            .border(1.dp, Color.White.copy(alpha = 0.2f), CircleShape)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clip(CircleShape)
-                            .background(preview.accentPrimary)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clip(CircleShape)
-                            .background(preview.accentSecondary)
-                    )
-                }
-
-                Column {
-                    Text(
-                        text = theme.displayName,
-                        color = if (isSelected) preview.accentPrimary else colors.textPrimary,
-                        fontSize = 14.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
-                    )
-                    Text(
-                        text = theme.description,
-                        color = colors.textMuted,
-                        fontSize = 11.sp
-                    )
-                }
-            }
-
-            if (isSelected) {
                 Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Selected",
-                    tint = preview.accentPrimary,
-                    modifier = Modifier.size(20.dp)
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = colors.accentPrimary,
+                    modifier = Modifier.size(18.dp)
+                )
+                Text(
+                    text = title,
+                    color = colors.accentPrimary,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
                 )
             }
+            Spacer(modifier = Modifier.height(12.dp))
+            content()
         }
     }
 }
@@ -563,7 +798,8 @@ private fun SettingsNavigationItem(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.weight(1f).padding(end = 8.dp)
         ) {
             Icon(
                 imageVector = icon,

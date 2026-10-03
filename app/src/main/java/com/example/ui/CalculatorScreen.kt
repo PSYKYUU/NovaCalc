@@ -1,5 +1,9 @@
 package com.example.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
@@ -10,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -24,6 +29,7 @@ fun CalculatorScreen(
     viewModel: AlexCalcViewModel,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val historyList by viewModel.historyList.collectAsStateWithLifecycle()
     val variablesList by viewModel.variablesList.collectAsStateWithLifecycle()
@@ -264,8 +270,19 @@ fun CalculatorScreen(
                     onToggleHaptics = { enabled -> viewModel.setHapticsEnabled(enabled) },
                     onSelectPrecision = { prec -> viewModel.setPrecisionDecimals(prec) },
                     onToggleAngle = { viewModel.toggleAngleMode() },
+                    onCycleFormat = { viewModel.cycleNumberFormat() },
                     onOpenModal = { modal -> viewModel.setActiveModal(modal) },
                     onClearAllData = { viewModel.clearAllData() },
+                    onExportHistory = {
+                        if (historyList.isEmpty()) {
+                            Toast.makeText(context, "No calculation history to export", Toast.LENGTH_SHORT).show()
+                        } else {
+                            val text = historyList.joinToString("\n") { "${it.expression} = ${it.resultFormatted}" }
+                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("NovaCalc History", text))
+                            Toast.makeText(context, "Exported ${historyList.size} calculations to clipboard", Toast.LENGTH_SHORT).show()
+                        }
+                    },
                     onDismiss = { viewModel.setActiveModal(ActiveModal.NONE) }
                 )
             }
