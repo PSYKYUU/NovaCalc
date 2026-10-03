@@ -1,0 +1,6 @@
+{
+  "name": "NovaCalc",
+  "description": "Modern scientific calculator for complex math expressions, dynamic variables, and calculation logging.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

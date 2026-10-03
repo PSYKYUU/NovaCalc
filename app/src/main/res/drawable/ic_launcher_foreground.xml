@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="0"
+        android:translateY="0">
+
+        <!-- Calculator Chassis with Smooth Rounded Corners -->
+        <!-- Outer Chassis Body -->
+        <path
+            android:fillColor="#151C26"
+            android:pathData="M39,21 H69 A12,12 0 0,1 81,33 V75 A12,12 0 0,1 69,87 H39 A12,12 0 0,1 27,75 V33 A12,12 0 0,1 39,21 Z" />
+
+        <!-- Top Screen Display -->
+        <path
+            android:fillColor="#263242"
+            android:pathData="M37,27 H71 A4,4 0 0,1 75,31 V36 A4,4 0 0,1 71,40 H37 A4,4 0 0,1 33,36 V31 A4,4 0 0,1 37,27 Z" />
+
+        <!-- 2x2 Keypad Grid -->
+
+        <!-- 1. Top-Left Button: Plus (+) -->
+        <path
+            android:fillColor="#344155"
+            android:pathData="M38,45 H47 A5,5 0 0,1 52,50 V57 A5,5 0 0,1 47,62 H38 A5,5 0 0,1 33,57 V50 A5,5 0 0,1 38,45 Z" />
+        <!-- Plus Sign Symbol -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="2.5"
+            android:strokeLineCap="round"
+            android:pathData="M37.5,53.5 L47.5,53.5 M42.5,48.5 L42.5,58.5" />
+
+        <!-- 2. Top-Right Button: Minus (-) -->
+        <path
+            android:fillColor="#344155"
+            android:pathData="M61,45 H70 A5,5 0 0,1 75,50 V57 A5,5 0 0,1 70,62 H61 A5,5 0 0,1 56,57 V50 A5,5 0 0,1 61,45 Z" />
+        <!-- Minus Sign Symbol -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="2.5"
+            android:strokeLineCap="round"
+            android:pathData="M60.5,53.5 L70.5,53.5" />
+
+        <!-- 3. Bottom-Left Button: Multiply (×) -->
+        <path
+            android:fillColor="#344155"
+            android:pathData="M38,67 H47 A5,5 0 0,1 52,72 V79 A5,5 0 0,1 47,84 H38 A5,5 0 0,1 33,79 V72 A5,5 0 0,1 38,67 Z" />
+        <!-- Multiply Sign Symbol -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="2.5"
+            android:strokeLineCap="round"
+            android:pathData="M38.5,71.5 L46.5,79.5 M46.5,71.5 L38.5,79.5" />
+
+        <!-- 4. Bottom-Right Button: Electric Blue Equals (=) -->
+        <path
+            android:fillColor="#2563EB"
+            android:pathData="M61,67 H70 A5,5 0 0,1 75,72 V79 A5,5 0 0,1 70,84 H61 A5,5 0 0,1 56,79 V72 A5,5 0 0,1 61,67 Z" />
+        <!-- Equals Sign Symbol -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="2.5"
+            android:strokeLineCap="round"
+            android:pathData="M61,73.5 L70,73.5 M61,78 L70,78" />
+
+    </group>
+</vector>
