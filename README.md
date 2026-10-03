@@ -288,15 +288,27 @@ Reactive Room queries automatically update the UI when stored data changes.
 
 ## 📱 Screenshots
 
-> Screenshots coming soon.
+### Calculator Modes
 
-Recommended screenshot layout:
+<p align="center">
+  <img src="screenshots/basic.png" width="240" alt="NovaCalc Basic Calculator">
+  <img src="screenshots/scientific.png" width="240" alt="NovaCalc Scientific Calculator">
+  <img src="screenshots/complex.png" width="240" alt="NovaCalc Complex Calculator">
+</p>
 
-```text
-[ Main Calculator ]   [ Scientific Mode ]   [ Complex Mode ]
+### History & Variables
 
-[ History ]           [ Variables ]         [ Themes ]
-```
+<p align="center">
+  <img src="screenshots/history.png" width="240" alt="NovaCalc Calculation History">
+  <img src="screenshots/variables.png" width="240" alt="NovaCalc Variables and Constants">
+</p>
+
+### Themes & Customization
+
+<p align="center">
+  <img src="screenshots/themes.png" width="240" alt="NovaCalc Themes and Visual Style">
+</p>
+
 
 ---
 
