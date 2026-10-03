@@ -106,7 +106,8 @@ fun DisplaySection(
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f).padding(end = 4.dp)
                 ) {
                     // DEG / RAD Toggle Chip
                     Surface(

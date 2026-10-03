@@ -122,13 +122,16 @@ We express our sincere gratitude and highest credit to Alex Barry and all contri
 
 ---
 
-## 💖 Made with Love
+## 💖 Made with Love & Respect for the Original Creator
 
-NovaCalc was created with a genuine love for mathematics, clean software engineering, and respect for user privacy:
+All love, appreciation, and credit belong first and foremost to the original creator, **[Alex Barry](https://github.com/alexbarry)**, who built the remarkable foundation and mathematical core of **[AlexCalc](https://github.com/alexbarry/AlexCalc)**.
 
-- **No distractions**: No subscriptions, no banner ads, no popups asking for ratings.
-- **Crafted for precision**: Designed so that students solving electrical engineering phasors, physics vectors, or high-school calculus have a reliable companion in their pocket.
-- **Aesthetic beauty**: Built on the belief that scientific tools can be both mathematically rigorous and visually stunning.
+What we did in NovaCalc is simply stand on the shoulders of Alex Barry's exceptional work:
+- **Renamed it**: Transformed the package presentation to NovaCalc.
+- **Revamped it**: Re-architected the entire interface into 100% declarative **Jetpack Compose** and **Material Design 3**, replacing legacy layouts with fluid animations and responsive mobile ergonomics.
+- **Modernized it**: Added reactive Kotlin Coroutines/StateFlow architecture, **Room SQLite** local calculation history, dynamic variables system, custom dark theme engine with interactive visual mockups, brutalist/curved corner geometry toggles, and seamless export utilities.
+
+Without Alex Barry's original open-source vision, passion for mathematics, and generous MIT licensing, this modern iteration would not exist. All credit for the underlying computational magic goes to him. Thank you, Alex! 💙
 
 ---
 

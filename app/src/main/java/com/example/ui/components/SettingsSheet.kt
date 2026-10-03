@@ -85,7 +85,8 @@ fun SettingsSheet(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    modifier = Modifier.weight(1f).padding(end = 8.dp)
                 ) {
                     Surface(
                         shape = shapes.pillShape,
@@ -101,7 +102,7 @@ fun SettingsSheet(
                             )
                         }
                     }
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "Settings",
                             color = colors.textPrimary,
@@ -111,7 +112,8 @@ fun SettingsSheet(
                         Text(
                             text = "Preferences, Appearance and System",
                             color = colors.textMuted,
-                            fontSize = 11.sp
+                            fontSize = 11.sp,
+                            maxLines = 1
                         )
                     }
                 }
@@ -166,7 +168,11 @@ fun SettingsSheet(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
+                        ) {
                             Text(
                                 text = "Corner Geometry",
                                 color = colors.textPrimary,
@@ -180,7 +186,10 @@ fun SettingsSheet(
                             )
                         }
 
-                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             ChoicePill(
                                 label = "Curved",
                                 isSelected = !uiState.sharpCorners,
@@ -241,7 +250,11 @@ fun SettingsSheet(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
+                        ) {
                             Text(
                                 text = "Trigonometric Unit",
                                 color = colors.textPrimary,
@@ -283,7 +296,8 @@ fun SettingsSheet(
                                 text = "Decimal Precision",
                                 color = colors.textPrimary,
                                 fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.weight(1f).padding(end = 4.dp)
                             )
                             Text(
                                 text = "${uiState.precisionDecimals} decimal places",
@@ -295,7 +309,7 @@ fun SettingsSheet(
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             listOf(4, 6, 8, 10, 12).forEach { prec ->
                                 val isSelected = uiState.precisionDecimals == prec
@@ -312,7 +326,7 @@ fun SettingsSheet(
                                         Text(
                                             text = "$prec",
                                             color = if (isSelected) colors.accentPrimary else colors.textMuted,
-                                            fontSize = 13.sp,
+                                            fontSize = 12.sp,
                                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                         )
                                     }
@@ -329,7 +343,11 @@ fun SettingsSheet(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
+                        ) {
                             Text(
                                 text = "Result Notation",
                                 color = colors.textPrimary,
@@ -338,8 +356,8 @@ fun SettingsSheet(
                             )
                             val formatDesc = when (uiState.numberFormat) {
                                 NumberDisplayFormat.STANDARD -> "Standard decimal (e.g. 1250.75)"
-                                NumberDisplayFormat.SCIENTIFIC -> "Scientific exponential (e.g. 1.25075e+03)"
-                                NumberDisplayFormat.POLAR -> "Complex polar form (e.g. 5 ∠ 53.13°)"
+                                NumberDisplayFormat.SCIENTIFIC -> "Scientific (e.g. 1.25075e+03)"
+                                NumberDisplayFormat.POLAR -> "Complex polar (e.g. 5 ∠ 53.13°)"
                             }
                             Text(
                                 text = formatDesc,
@@ -413,7 +431,11 @@ fun SettingsSheet(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
+                        ) {
                             Text(
                                 text = "Calculation History Logs",
                                 color = colors.textPrimary,
@@ -430,7 +452,8 @@ fun SettingsSheet(
                             onClick = onExportHistory,
                             shape = shapes.pillShape,
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = colors.accentPrimary),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, colors.accentPrimary.copy(alpha = 0.5f))
+                            border = androidx.compose.foundation.BorderStroke(1.dp, colors.accentPrimary.copy(alpha = 0.5f)),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
                         ) {
                             Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(14.dp))
                             Spacer(modifier = Modifier.width(4.dp))
@@ -445,7 +468,11 @@ fun SettingsSheet(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 8.dp)
+                        ) {
                             Text(
                                 text = "Reset Local Storage",
                                 color = colors.textPrimary,
@@ -462,7 +489,8 @@ fun SettingsSheet(
                             onClick = { showClearDataConfirm = true },
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = colors.error),
                             border = androidx.compose.foundation.BorderStroke(1.dp, colors.error.copy(alpha = 0.5f)),
-                            shape = shapes.pillShape
+                            shape = shapes.pillShape,
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
                         ) {
                             Text("Clear Data", fontSize = 12.sp)
                         }
@@ -733,7 +761,7 @@ private fun ChoicePill(
             color = if (isSelected) colors.accentPrimary else colors.textMuted,
             fontSize = 12.sp,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
+            modifier = Modifier.padding(horizontal = 11.dp, vertical = 6.dp)
         )
     }
 }
@@ -755,7 +783,7 @@ private fun SectionCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(14.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -798,7 +826,7 @@ private fun SettingsNavigationItem(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.weight(1f).padding(end = 8.dp)
         ) {
             Icon(
@@ -807,7 +835,7 @@ private fun SettingsNavigationItem(
                 tint = colors.accentPrimary,
                 modifier = Modifier.size(20.dp)
             )
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
                     color = colors.textPrimary,
@@ -817,7 +845,8 @@ private fun SettingsNavigationItem(
                 Text(
                     text = subtitle,
                     color = colors.textMuted,
-                    fontSize = 11.sp
+                    fontSize = 11.sp,
+                    lineHeight = 15.sp
                 )
             }
         }
